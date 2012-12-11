@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+		<meta name="generator" content="MODX file generated with PP MODX Creator 1.0.1 by tumba25 (offline version)"/>
+		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
+		<title lang="en"><![CDATA[add Main site nav]]></title>
+		<description lang="en"><![CDATA[simple description]]></description>
+		<author-group>
+			<author>
+				<username><![CDATA[Pertneer]]></username>
+			</author>
+		</author-group>
+		<mod-version>1.0.0</mod-version>
+		<installation>
+			<level>easy</level>
+			<time>120</time>
+			<target-version>3.0.11</target-version>
+		</installation>
+	</header>
+	<action-group>
+		<sql><![CDATA[INSERT INTO `phpbb_config` (`config_name`, `config_value`, `is_dynamic`) VALUES
+('site_home_text', '', 0),
+('site_home_url', '', 0);]]></sql>
+		<open src="includes/functions.php">
+			<edit>
+				<find><![CDATA['L_INDEX'			=> $user->lang['FORUM_INDEX'],]]></find>
+				<action type="after-add"><![CDATA[		'L_SITE_HOME'		=> ($config['site_home_text'] !== '') ? $config['site_home_text'] : $user->lang['HOME'],]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA['U_SEARCH'				=> append_sid("{$phpbb_root_path}search.$phpEx"),]]></find>
+				<action type="after-add"><![CDATA[		'U_SITE_HOME'			=> $config['site_home_url'],]]></action>
+			</edit>
+		</open>
+		<open src="includes/acp/acp_board.php">
+			<edit>
+				<find><![CDATA['site_desc'				=> array('lang' => 'SITE_DESC',				'validate' => 'string',	'type' => 'text:40:255', 'explain' => false),]]></find>
+				<action type="after-add"><![CDATA[		'site_home_url'			=> array('lang' => 'SITE_HOME_URL',			'validate' => 'string',	'type' => 'text:40:255', 'explain' => true),
+						'site_home_text'		=> array('lang' => 'SITE_HOME_TEXT',		'validate' => 'string',	'type' => 'text:40:255', 'explain' => true),]]></action>
+			</edit>
+		</open>
+		<open src="language/en/acp/board.php">
+			<edit>
+				<find><![CDATA['SITE_DESC'						=> 'Site description',]]></find>
+				<action type="after-add"><![CDATA[		'SITE_HOME_TEXT'				=> 'Main website text',
+	'SITE_HOME_TEXT_EXPLAIN'		=> 'This text will be displayed as a link to your website homepage in the board’s breadcrumbs. If not specified, it will default to “Home”.',
+	'SITE_HOME_URL'					=> 'Main website URL',
+	'SITE_HOME_URL_EXPLAIN'			=> 'If specified, a link to this URL will be prepended to your board’s breadcrumbs and the board logo will link to this URL instead of the forum index. An absolute URL is required, e.g. <samp>http://www.phpbb.com</samp>.',]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/overall_footer.html">
+			<edit>
+				<find><![CDATA[<li class="icon-home"><a href="{U_INDEX}" accesskey="h">{L_INDEX}</a></li>]]></find>
+				<action type="replace-with"><![CDATA[<li class="icon-home"><!-- IF U_SITE_HOME --><a href="{U_SITE_HOME}">{L_SITE_HOME}</a> <strong>&#8249;</strong> <!-- ENDIF --><a href="{U_INDEX}" accesskey="h">{L_INDEX}</a></li>]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/overall_header.html">
+			<edit>
+				<find><![CDATA[<a href="{U_INDEX}" title="{L_INDEX}" id="logo">{SITE_LOGO_IMG}</a>]]></find>
+				<action type="replace-with"><![CDATA[<a href="<!-- IF U_SITE_HOME -->{U_SITE_HOME}<!-- ELSE -->{U_INDEX}<!-- ENDIF -->" title="<!-- IF U_SITE_HOME -->{L_SITE_HOME}<!-- ELSE -->{L_INDEX}<!-- ENDIF -->" id="logo">{SITE_LOGO_IMG}</a>]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[<li class="icon-home"><a href="{U_INDEX}" accesskey="h">{L_INDEX}</a> <!-- BEGIN navlinks --> <strong>&#8249;</strong> <a href="{navlinks.U_VIEW_FORUM}">{navlinks.FORUM_NAME}</a><!-- END navlinks --></li>]]></find>
+				<action type="replace-with"><![CDATA[<li class="icon-home"><!-- IF U_SITE_HOME --><a href="{U_SITE_HOME}">{L_SITE_HOME}</a> <strong>&#8249;</strong> <!-- ENDIF --><a href="{U_INDEX}" accesskey="h">{L_INDEX}</a> <!-- BEGIN navlinks --> <strong>&#8249;</strong> <a href="{navlinks.U_VIEW_FORUM}">{navlinks.FORUM_NAME}</a><!-- END navlinks --></li>]]></action>
+			</edit>
+		</open>
+		<diy-instructions lang="en"><![CDATA[dump the cache!!!!!]]></diy-instructions>
+	</action-group>
+</mod>
