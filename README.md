@@ -1,4 +1,4 @@
-main_site_nav
+main site nav
 =============
 
-phpBB3 add a navigation item to main site when phpbb is installed in a lower directory
+phpBB3 mod to add a navigation item to main site when phpbb is installed in a lower directory
